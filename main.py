@@ -1,3 +1,5 @@
+import pickle
+
 class Faculty:
     def __init__(self, name, field):
         self.name = name
@@ -51,7 +53,34 @@ class University:
         return [faculty.name for faculty in self.faculties if faculty.field == field]
 
 
-university = University()
+class SaveManager:
+    @staticmethod
+    def save_state(university, filename):
+        try:
+            with open(filename, 'wb') as file:
+                pickle.dump(university, file)
+                print("Program state saved successfully.")
+        except Exception as e:
+            print(f"Error occurred while saving program state: {e}")
+
+    @staticmethod
+    def load_state(filename):
+        try:
+            with open(filename, 'rb') as file:
+                university = pickle.load(file)
+                print("Program state loaded successfully.")
+                return university
+        except FileNotFoundError:
+            print("No saved state found. Starting with empty state.")
+            return University()
+        except Exception as e:
+            print(f"Error occurred while loading program state: {e}")
+            return University()
+
+
+filename = "university_state.pkl"
+
+university = SaveManager.load_state(filename)
 
 while True:
     print("\nMenu:")
@@ -182,6 +211,7 @@ while True:
                 print("No faculties found for this field.")
 
     elif choice == "3":
+        SaveManager.save_state(university, filename)
         print("Exiting program.")
         break
 
