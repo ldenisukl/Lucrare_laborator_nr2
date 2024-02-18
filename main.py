@@ -50,8 +50,6 @@ class University:
     def display_faculties_by_field(self, field):
         return [faculty.name for faculty in self.faculties if faculty.field == field]
 
-
-# Exemplu de program loop
 university = University()
 
 while True:
@@ -86,20 +84,68 @@ while True:
             print("Student assigned to faculty.")
 
         elif faculty_choice == "2":
-            # implementarea operatiei de absolvire a unui student dintr-o facultate
-            pass
+    student_id = input("Enter student unique identifier: ")
+    faculty_name = input("Enter faculty name: ")
 
-        elif faculty_choice == "3":
-            # implementarea afișării studenților înscriși în prezent
-            pass
+    # Cautăm facultatea căreia îi aparține studentul
+    faculty = university.search_faculty(student_id)
+
+    if faculty and faculty.name == faculty_name:
+        for student in faculty.students:
+            if student.unique_identifier == student_id:
+                student.graduate()
+                faculty.graduate_student(student)
+                print("Student graduated from faculty.")
+                break
+        else:
+            print("Student not found in the specified faculty.")
+    else:
+        print("Student not found or not assigned to the specified faculty.")
+
+       elif faculty_choice == "3":
+    faculty_name = input("Enter faculty name: ")
+
+    for faculty in university.faculties:
+        if faculty.name == faculty_name:
+            enrolled_students = faculty.enrolled_students()
+            if enrolled_students:
+                print("Enrolled students:")
+                for student in enrolled_students:
+                    print(f"- {student.name}")
+            else:
+                print("No enrolled students in the specified faculty.")
+            break
+    else:
+        print("Faculty not found.")
 
         elif faculty_choice == "4":
-            # implementarea afișării absolvenților
-            pass
+    faculty_name = input("Enter faculty name: ")
+
+    for faculty in university.faculties:
+        if faculty.name == faculty_name:
+            graduates = faculty.graduates()
+            if graduates:
+                print("Graduates:")
+                for student in graduates:
+                    print(f"- {student.name}")
+            else:
+                print("No graduates in the specified faculty.")
+            break
+    else:
+        print("Faculty not found.")
+
 
         elif faculty_choice == "5":
-            # implementarea verificării dacă un student aparține unei facultăți
-            pass
+    student_id = input("Enter student unique identifier: ")
+    faculty_name = input("Enter faculty name: ")
+
+    faculty = university.search_faculty(student_id)
+
+    if faculty and faculty.name == faculty_name:
+        print(f"The student belongs to {faculty.name} faculty.")
+    else:
+        print("Student not found or not assigned to the specified faculty.")
+
 
     elif choice == "2":
         print("\nGeneral Operations:")
@@ -127,7 +173,6 @@ while True:
         elif general_choice == "3":
             print("University faculties:")
             print(university.display_all_faculties())
-
         elif general_choice == "4":
             field = input("Enter field: ")
             faculties = university.display_faculties_by_field(field)
